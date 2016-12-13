@@ -1,50 +1,3 @@
-//package service.blservice;
-//
-//import java.util.ArrayList;
-//
-//import objects.*;
-//
-//public   interface StrategyBLService {
-//	// �ṩ��������õĽӿ�
-//
-//		/**
-//		 * @param input
-//		 * @return �Ƶ���Ӵ�������
-//		 */
-//		public ResultMessage hotelstrategy_make(HotelStrategy strategy);
-//
-//		/**
-//		 * @param strategy
-//		 * @return �Ƶ���´�������
-//		 */
-//		public ResultMessage hotelstrategy_update(HotelStrategy strategy);
-//
-//		/**
-//		 * @param strategy
-//		 * @return ��վӪ����Ա��Ӵ�������
-//		 */
-//		public ResultMessage webstrategy_make(WebStrategy strategy);
-//
-//		/**
-//		 * @param strategy
-//		 * @return ��վӪ����Ա���´�������
-//		 */
-//		public ResultMessage webstrategy_update(WebStrategy strategy);
-//
-//		// �ṩ��ͬ����õĽӿ�
-//		/**
-//		 * @param hotelid
-//		 * @param clientid
-//		 * @return �õ���Ӧ�ͻ����õĶ�Ӧ�Ƶ�Ĵ��������б�
-//		 */
-//		public ArrayList<HotelStrategy> getStrategy(int hotelid, int clientid);
-//
-//		/**
-//		 * @param clientid
-//		 * @return �õ���Ӧ�ͻ�ʹ�õ���վ�Ĵ��������б�
-//		 */
-//		public ArrayList<WebStrategy> getStrategy(int clientid);
-//}
 package service.blservice;
 
 import java.rmi.Remote;
@@ -94,4 +47,13 @@ public interface StrategyBLService extends Remote{
 	 * @return 得到对应客户使用的网站的促销策略列表
 	 */
 	public ArrayList<WebStrategyVO> getWebStrategy(int clientid)throws RemoteException;
+
+	public HotelStrategyVO gethotelstrategybyname(String name)throws RemoteException;
+	
+	public WebStrategyVO getwebstrategybyname(String name)throws RemoteException;
+
+	public ResultMessage hotelstrategy_delete(HotelStrategyVO hotelstrategyvo)throws RemoteException;
+	
+	public ResultMessage webstrategy_delete(WebStrategyVO webstrategyvo)throws RemoteException;
+
 }
