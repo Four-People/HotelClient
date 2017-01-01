@@ -39,7 +39,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>ui.loginui.Main</mainClass>
+							<mainClass>runner.ClientRunner</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

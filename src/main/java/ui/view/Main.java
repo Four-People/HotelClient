@@ -15,6 +15,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import rmi.RemoteHelper;
+import runner.ClientRunner;
 import ui.model.HotelModel;
 import ui.model.OrderModel;
 import ui.view.client.ClientBasicInfoController;
@@ -102,7 +103,7 @@ public class Main extends Application {
 		try {
 
 			LoginOverviewController loginOverviewController = (LoginOverviewController) replaceSceneContent(
-					"user/LoginOverview.fxml");
+					"user/LoginOverView.fxml");
 			loginOverviewController.setMain(this);
 		} catch (Exception e) {
 			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, e);
@@ -728,6 +729,7 @@ public class Main extends Application {
 	}
 
 	public static void main(String[] args) {
+		
 		launch(args);
 	}
 
