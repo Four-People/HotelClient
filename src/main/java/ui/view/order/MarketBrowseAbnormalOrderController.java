@@ -4,6 +4,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
 
@@ -52,7 +53,7 @@ public class MarketBrowseAbnormalOrderController implements Initializable {
 
 	@FXML
 	private void cancelAbnormalOrder() {
-		if (currentOrder==null) {
+		if (currentOrder == null) {
 			AlertUtil.showWarningAlert("未选中任何异常订单！");
 			return;
 		}
@@ -64,25 +65,25 @@ public class MarketBrowseAbnormalOrderController implements Initializable {
 		try {
 			int orderid = Integer.parseInt(currentOrder.getOrderid());
 			int clientid = Integer.parseInt(currentOrder.getClientid());
-			//将订单置为已撤销
+			// 将订单置为已撤销
 			ResultMessage m1 = helper.getOrderBLService().order_market_cancelAbnormal(orderid);
-			
-			//恢复信用值
+
+			// 恢复信用值
 			ResultMessage m2 = helper.getClientBLService().updateClientCredit(clientid, recover, 1);
-			
-			//添加信用记录
+
+			// 添加信用记录
 			Date date = new Date();
 			String nowTime = format.format(date);
-			String newRecord = nowTime+","+currentOrder.getOrderid()+","+RecordActionUtil.getMarketCancel()+","+recover+","+helper.getClientBLService().client_checkCredit(clientid);
-			
+			String newRecord = nowTime + "," + currentOrder.getOrderid() + "," + RecordActionUtil.getMarketCancel()
+					+ "," + recover + "," + helper.getClientBLService().client_checkCredit(clientid);
+
 			ResultMessage m3 = helper.getClientBLService().client_updateClientCreditList(clientid, newRecord);
-			if (m2==ResultMessage.Success&&m1==m2&&m3==m2) {
+			if (m2 == ResultMessage.Success && m1 == m2 && m3 == m2) {
 				AlertUtil.showConfirmingAlert("撤销成功！");
-				
-				//删除表格项
+
+				// 删除表格项
 				orderTable.getItems().remove(currentOrder);
-			}
-			else{
+			} else {
 				AlertUtil.showErrorAlert("撤销失败！");
 			}
 		} catch (NumberFormatException e) {
@@ -101,6 +102,24 @@ public class MarketBrowseAbnormalOrderController implements Initializable {
 
 	}
 
+	/**
+	 * 检查是否是今天的订单
+	 * 
+	 * @param vo
+	 * @return
+	 */
+	public boolean checkToday(OrderVO vo) {
+		Calendar today = Calendar.getInstance();
+		Calendar voday = Calendar.getInstance();
+		voday.setTime(vo.getlatest_execute_time());
+		if (today.get(Calendar.YEAR) == voday.get(Calendar.YEAR)
+				&& today.get(Calendar.DAY_OF_YEAR) == voday.get(Calendar.DAY_OF_YEAR)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public void setMain(Main main) {
 		this.main = main;
 		RemoteHelper helper = RemoteHelper.getInstance();
@@ -113,7 +132,7 @@ public class MarketBrowseAbnormalOrderController implements Initializable {
 		try {
 			ArrayList<OrderVO> orderdata = helper.getOrderBLService().order_market_browseUnfilled();
 			for (OrderVO vo : orderdata) {
-				if (vo != null) {
+				if (vo != null && checkToday(vo)) {
 					OrderModel model = new OrderModel();
 					model.setOrderid(vo.getid());
 					model.setClientid(vo.getclientid());
@@ -129,23 +148,23 @@ public class MarketBrowseAbnormalOrderController implements Initializable {
 		} catch (RemoteException | NullPointerException e) {
 			e.printStackTrace();
 		}
-		
+
 		idColumn.setCellValueFactory(celldata -> celldata.getValue().orderidProperty());
 		clientColumn.setCellValueFactory(celldata -> celldata.getValue().clientidProperty());
 		deadTimeColumn.setCellValueFactory(celldata -> celldata.getValue().latestExecuteTimeProperty());
 		overTimeColumn.setCellValueFactory(celldata -> celldata.getValue().overTimeProperty());
 		punishColumn.setCellValueFactory(celldata -> celldata.getValue().punishCreditProperty());
-		
+
 		// 将鼠标最近点击过的那一行的order设为currentOrder
 		idColumn.setCellFactory(new Callback<TableColumn<OrderModel, String>, TableCell<OrderModel, String>>() {
 			@Override
 			public TableCell<OrderModel, String> call(TableColumn<OrderModel, String> param) {
 				TextFieldTableCell<OrderModel, String> cell = new TextFieldTableCell<>();
 				cell.setOnMouseClicked((MouseEvent t) -> {
-					if (cell.getIndex()<orderTable.getItems().size()) {
+					if (cell.getIndex() < orderTable.getItems().size()) {
 						currentOrder = orderTable.getItems().get(cell.getIndex());
 					}
-					
+
 				});
 				return cell;
 			}
@@ -155,7 +174,7 @@ public class MarketBrowseAbnormalOrderController implements Initializable {
 			public TableCell<OrderModel, String> call(TableColumn<OrderModel, String> param) {
 				TextFieldTableCell<OrderModel, String> cell = new TextFieldTableCell<>();
 				cell.setOnMouseClicked((MouseEvent t) -> {
-					if (cell.getIndex()<orderTable.getItems().size()) {
+					if (cell.getIndex() < orderTable.getItems().size()) {
 						currentOrder = orderTable.getItems().get(cell.getIndex());
 					}
 				});
@@ -167,7 +186,7 @@ public class MarketBrowseAbnormalOrderController implements Initializable {
 			public TableCell<OrderModel, String> call(TableColumn<OrderModel, String> param) {
 				TextFieldTableCell<OrderModel, String> cell = new TextFieldTableCell<>();
 				cell.setOnMouseClicked((MouseEvent t) -> {
-					if (cell.getIndex()<orderTable.getItems().size()) {
+					if (cell.getIndex() < orderTable.getItems().size()) {
 						currentOrder = orderTable.getItems().get(cell.getIndex());
 					}
 				});
@@ -179,7 +198,7 @@ public class MarketBrowseAbnormalOrderController implements Initializable {
 			public TableCell<OrderModel, String> call(TableColumn<OrderModel, String> param) {
 				TextFieldTableCell<OrderModel, String> cell = new TextFieldTableCell<>();
 				cell.setOnMouseClicked((MouseEvent t) -> {
-					if (cell.getIndex()<orderTable.getItems().size()) {
+					if (cell.getIndex() < orderTable.getItems().size()) {
 						currentOrder = orderTable.getItems().get(cell.getIndex());
 					}
 				});
@@ -191,7 +210,7 @@ public class MarketBrowseAbnormalOrderController implements Initializable {
 			public TableCell<OrderModel, String> call(TableColumn<OrderModel, String> param) {
 				TextFieldTableCell<OrderModel, String> cell = new TextFieldTableCell<>();
 				cell.setOnMouseClicked((MouseEvent t) -> {
-					if (cell.getIndex()<orderTable.getItems().size()) {
+					if (cell.getIndex() < orderTable.getItems().size()) {
 						currentOrder = orderTable.getItems().get(cell.getIndex());
 					}
 				});
