@@ -3,6 +3,7 @@ package ui.view.manager;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.ResourceBundle;
 import java.util.concurrent.Semaphore;
@@ -478,22 +479,45 @@ public class ManagerOverviewController implements Initializable {
 		vo.setpassword(addWorkerPasswordTextField.getText());
 		RemoteHelper helper = RemoteHelper.getInstance();
 		try {
+			ArrayList<HotelVO> hotellist=helper.getManageBLService().getallhotelvo();
+			boolean x=false;
+			for(HotelVO hotelvo:hotellist){
+				if(hotelvo.getid()==vo.gethotelid()){
+					x=true;
+					break;
+				}
+			}
+			ArrayList<HotelWorkerVO> hotelWorkerlist=helper.getManageBLService().getallhotelworkervo();
+			for(HotelWorkerVO hotelWorkerVO:hotelWorkerlist){
+				if(hotelWorkerVO.gethotelid()==vo.gethotelid()){
+					x=false;
+					break;
+				}
+			}
+			if(x){
 			ResultMessage message = helper.getManageBLService().manage_addHotelWorker(vo);
 			if (message == ResultMessage.Fail) {
-				AlertUtil.showErrorAlert("添加酒店工作人员失败！可能是由于酒店不存在或者已经存在一个工作人员。");
-				return;
+				AlertUtil.showErrorAlert("添加酒店工作人员失败！");
+			}
+			else{
+				// 添加表格项
+				HotelWorkerModel model = new HotelWorkerModel();
+				model.setHotelid(vo.gethotelid());
+				model.setName(vo.getname());
+				model.setContact(vo.getcontact());
+				workerList.add(model);
+				AlertUtil.showInformationAlert("添加酒店工作人员成功！");
+			}
+			}
+			else{
+				AlertUtil.showErrorAlert("对不起，该酒店不存在或已有工作人员");
 			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
-		// 添加表格项
-		HotelWorkerModel model = new HotelWorkerModel();
-		model.setHotelid(vo.gethotelid());
-		model.setName(vo.getname());
-		model.setContact(vo.getcontact());
-		workerList.add(model);
+		
 
-		AlertUtil.showInformationAlert("添加酒店工作人员成功！");
+		
 	}
 
 	@FXML
