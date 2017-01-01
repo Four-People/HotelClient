@@ -4,6 +4,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
 
@@ -50,6 +51,9 @@ public class MarketBrowseAbnormalOrderController implements Initializable {
 	@FXML
 	private ComboBox<String> choiceComboBox;
 
+	/**
+	 * 撤销订单
+	 */
 	@FXML
 	private void cancelAbnormalOrder() {
 		if (currentOrder==null) {
@@ -113,7 +117,7 @@ public class MarketBrowseAbnormalOrderController implements Initializable {
 		try {
 			ArrayList<OrderVO> orderdata = helper.getOrderBLService().order_market_browseUnfilled();
 			for (OrderVO vo : orderdata) {
-				if (vo != null) {
+				if (vo != null && checkToday(vo)) {
 					OrderModel model = new OrderModel();
 					model.setOrderid(vo.getid());
 					model.setClientid(vo.getclientid());
@@ -201,4 +205,23 @@ public class MarketBrowseAbnormalOrderController implements Initializable {
 
 		orderTable.setItems(orderList);
 	}
+	
+	/**
+	 * 检查是否是今天的订单
+	 * @param vo
+	 * @return
+	 */
+	public boolean checkToday(OrderVO vo){
+		Calendar today = Calendar.getInstance();
+		Calendar voday = Calendar.getInstance();
+		voday.setTime(vo.getlatest_execute_time());
+		if (today.get(Calendar.YEAR)==voday.get(Calendar.YEAR)
+				&&today.get(Calendar.DAY_OF_YEAR)==voday.get(Calendar.DAY_OF_YEAR)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 }
+
