@@ -21,6 +21,7 @@ import ui.view.Main;
 import vo.ClientVO;
 import vo.HotelVO;
 import vo.OrderVO;
+import vo.RoomVO;
 
 public class ClientBrowseHotelController implements Initializable{
 	private Main main;
@@ -47,6 +48,8 @@ public class ClientBrowseHotelController implements Initializable{
 	@FXML
 	private TableColumn<HotelModel, String> orderStateColumn;
 	
+	@FXML
+	private TableColumn<HotelModel, String> cheapestRoomColumn;
 	
 	public ClientBrowseHotelController() {
 	
@@ -73,6 +76,17 @@ public class ClientBrowseHotelController implements Initializable{
 				model.setAddress(vo.getaddress());
 				model.setStar(vo.getstar());
 				model.setScore(vo.getscore().split(",")[0]);
+				//选择当前酒店最便宜的房间价格
+				ArrayList<RoomVO> rooms = helper.getHotelBLService().getallroom(vo.getid());
+				if (!rooms.isEmpty()) {
+					int cheapest = rooms.get(0).getprice();
+					for(RoomVO room: rooms){
+						if (cheapest>room.getprice()) {
+							cheapest = room.getprice();
+						}
+					}
+					model.setCheapestRoomPrice(cheapest);
+				}
 				ArrayList<OrderVO> orderVOs = helper.getOrderBLService().findorderByHotelid(vo.getid());
 				model.setOrderState(orderVOs.get(orderVOs.size()-1).getstate());
 				models.add(model);
@@ -192,6 +206,7 @@ public class ClientBrowseHotelController implements Initializable{
 				return cell;
 			}
 		});
-		
+		cheapestRoomColumn.setCellValueFactory(celldata -> celldata.getValue().cheapestRoomPriceProperty());
+		cheapestRoomColumn.setCellFactory(orderStateColumn.getCellFactory());
 	}
 }

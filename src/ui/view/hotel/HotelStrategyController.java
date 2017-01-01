@@ -148,7 +148,7 @@ public class HotelStrategyController implements Initializable {
 			deleteDiscountLabel.setText("");
 			deleteConditionLabel.setText("");
 			deleteSuperpositionLabel.setText("");
-
+			currentStrategy = null;
 			AlertUtil.showWarningAlert("不存在该促销策略！");
 		}
 	}
@@ -181,7 +181,7 @@ public class HotelStrategyController implements Initializable {
 			updateConditionComboBox.setValue(null);
 			updateYesButton.setSelected(false);
 			updateNoButton.setSelected(false);
-
+			currentStrategy = null;
 			AlertUtil.showWarningAlert("不存在该促销策略！");
 		}
 	}
@@ -343,9 +343,9 @@ public class HotelStrategyController implements Initializable {
 
 		// 单选框的初始化
 		addDiscountComboBox.getItems().addAll(StrategyUtil.getDiscounts());
-		addConditionComboBox.getItems().addAll(StrategyUtil.getWebAllConditions());
+		addConditionComboBox.getItems().addAll(StrategyUtil.getHotelAllConditions());
 		updateDiscountComboBox.getItems().addAll(StrategyUtil.getDiscounts());
-		updateConditionComboBox.getItems().addAll(StrategyUtil.getWebAllConditions());
+		updateConditionComboBox.getItems().addAll(StrategyUtil.getHotelAllConditions());
 
 		// 结束日期不得早于开始日期
 		addEndTimeDatePicker.setDayCellFactory(new Callback<DatePicker, DateCell>() {

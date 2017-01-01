@@ -11,7 +11,10 @@ public class ClientModel {
 	private final SimpleStringProperty vipType;
 	private final SimpleStringProperty vipInfo;
 	private final SimpleStringProperty credit;
-//	private final SimpleStringProperty username; 
+	private final SimpleStringProperty vipLevel;
+	private final SimpleStringProperty vipBusinessAddress;
+	
+	
 	public ClientModel() {
 		clientid = new SimpleStringProperty();
 		clientName  = new SimpleStringProperty();
@@ -19,7 +22,8 @@ public class ClientModel {
 		vipType = new SimpleStringProperty();
 		vipInfo = new SimpleStringProperty();
 		credit = new SimpleStringProperty();
-//		username = new SimpleStringProperty();
+		vipLevel = new SimpleStringProperty();
+		vipBusinessAddress = new SimpleStringProperty();
 	}
 
 	public String getID() {
@@ -94,11 +98,15 @@ public class ClientModel {
 		return credit;
 	}
 
-//	public String getUsername(){
-//		return username.get();
-//	}
-//	
-//	public void setUsername(String username){
-//		this.username.set(username);
-//	}
+	public String getVipLevel() {
+		return vipLevel.get();
+	}
+
+	public void setVipLevel(String vipLevel) {
+		this.vipLevel.set(vipLevel);
+	}
+
+	public SimpleStringProperty vipLevelProperty() {
+		return vipLevel;
+	}
 }

@@ -170,8 +170,8 @@ public class HotelRoomManageController implements Initializable {
 		this.main = main;
 		currentHotel = hotelVO;
 
-		addTypeTextField.getItems().addAll(RoomTypeUtil.getAllRoomType());
-		updateTypeTextField.setItems(addTypeTextField.getItems());
+		addTypeTextField.getItems().setAll(RoomTypeUtil.getAllRoomType());
+		updateTypeTextField.getItems().setAll(RoomTypeUtil.getAllRoomType());
 		// 将当前酒店的所有可用房间录入到表格内
 		
 		ObservableList<RoomModel> roomModels = FXCollections.observableArrayList();
