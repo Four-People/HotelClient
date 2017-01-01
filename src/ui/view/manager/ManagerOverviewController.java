@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
@@ -47,14 +48,14 @@ public class ManagerOverviewController implements Initializable {
 			// 实时更新时间
 			timeLabel.setText(format.format(Calendar.getInstance().getTime()));
 
-			// 实时更新统计数据
-			clientNumLabel.setText(String.valueOf(clientList.size()));
-			hotelNumLabel.setText(String.valueOf(hotelList.size()));
-			 try {
-				orderNumLabel.setText(String.valueOf(remoteHelper.getManageBLService().getordernumber()));
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
+//			// 实时更新统计数据
+//			clientNumLabel.setText(String.valueOf(clientList.size()));
+//			hotelNumLabel.setText(String.valueOf(hotelList.size()));
+//			 try {
+//				orderNumLabel.setText(String.valueOf(remoteHelper.getManageBLService().getordernumber()));
+//			} catch (RemoteException e) {
+//				e.printStackTrace();
+//			}
 		}
 
 	}
@@ -143,9 +144,12 @@ public class ManagerOverviewController implements Initializable {
 	@FXML
 	private TableColumn<ClientModel, String> clientVipInfoColumn;
 
-
+	@FXML
+	private TableColumn<ClientModel, String> clientVipLevelColumn;
+	
 	@FXML
 	private TableColumn<ClientModel, String> clientVipTypeColumn;
+	
 
 	@FXML
 	private TextField updateClientIDTextField;
@@ -158,9 +162,12 @@ public class ManagerOverviewController implements Initializable {
 
 	@FXML
 	private TextField updateClientVIPTextField;
-
+	
 	@FXML
 	private ComboBox<String> updatevipTypeCombobox;
+	
+	@FXML
+	private ComboBox<String> updatevipLevelCombobox;
 
 	@FXML
 	private TableView<HotelModel> hotelTable;
@@ -180,8 +187,6 @@ public class ManagerOverviewController implements Initializable {
 	@FXML
 	private TableColumn<HotelModel, String> hotelStarColumn;
 
-	@FXML
-	private TableColumn<HotelModel, String> hotelScoreColumn;
 
 	@FXML
 	private TextField addHotelNameTextField;
@@ -300,8 +305,9 @@ public class ManagerOverviewController implements Initializable {
 				updateClientNameTextField.setText(client.getName());
 				updateClientContactTextField.setText(client.getContact());
 				updatevipTypeCombobox.setValue(client.getVIPType());
+				updatevipLevelCombobox.setValue(client.getVipLevel());
 				updateClientVIPTextField.setText(client.getVipInfo());
-
+				
 				isSuccess = true;
 			}
 		}
@@ -310,13 +316,18 @@ public class ManagerOverviewController implements Initializable {
 			updateClientContactTextField.setText("");
 			updatevipTypeCombobox.setValue("");
 			updateClientVIPTextField.setText("");
-			
+			updatevipLevelCombobox.setValue("");
+			currentClientModel = null;
 			AlertUtil.showWarningAlert("不存在该客户！");
 		}
 	}
 
 	@FXML
 	private void updateClient() {
+		if (currentClientModel==null) {
+			AlertUtil.showWarningAlert("未选定客户！");
+			return;
+		}
 		boolean isSuccess = false;
 		// 更新表格
 		int index;
@@ -325,13 +336,18 @@ public class ManagerOverviewController implements Initializable {
 				clientList.get(index).setName(updateClientNameTextField.getText());
 				clientList.get(index).setContact(updateClientContactTextField.getText());
 				clientList.get(index).setVIPtype(updatevipTypeCombobox.getValue());
+				if (updatevipTypeCombobox.getValue().equals("非会员")) {
+					updatevipLevelCombobox.setValue("");
+					updateClientVIPTextField.setText("");
+				}
+				clientList.get(index).setVipLevel(updatevipLevelCombobox.getValue());
 				clientList.get(index).setVipInfo(updateClientVIPTextField.getText());
 				isSuccess = true;
 				break;
 			}
 		}
 		if (!isSuccess) {
-			AlertUtil.showWarningAlert("未指定客户或客户不存在！");
+			AlertUtil.showWarningAlert("选定的客户不存在！");
 			return;
 		}
 		// 更新底层数据
@@ -345,7 +361,7 @@ public class ManagerOverviewController implements Initializable {
 				info = null;
 			} else {
 				info.setType(updatevipTypeCombobox.getValue().equals("普通会员") ? VIPType.NORMAL : VIPType.Enterprise);
-				info.setInfo(updateClientVIPTextField.getText());
+				info.setInfo(updatevipLevelCombobox.getValue()+","+updateClientVIPTextField.getText());
 			}
 			vo.setvipinfo(info);
 			ResultMessage message = helper.getClientBLService().client_updateInfo(vo);
@@ -391,7 +407,7 @@ public class ManagerOverviewController implements Initializable {
 		model.setStar(vo.getstar());
 		model.setScore(vo.getscore());
 		hotelList.add(model);
-
+		
 		AlertUtil.showInformationAlert("添加酒店成功！");
 	}
 
@@ -415,6 +431,7 @@ public class ManagerOverviewController implements Initializable {
 			updateHotelBusinessAddressTextField.setText("");
 			updateHotelAddressTextField.setText("");
 			updateHotelStarTextField.setText("");
+			currentHotelModel = null;
 			AlertUtil.showWarningAlert("不存在该酒店！");
 		}
 	}
@@ -422,7 +439,7 @@ public class ManagerOverviewController implements Initializable {
 	@FXML
 	private void updateHotel() {
 		if (currentHotelModel == null) {
-			AlertUtil.showWarningAlert("未指定酒店！");
+			AlertUtil.showWarningAlert("未选定酒店！");
 			return;
 		}
 		// 更新底层数据
@@ -461,7 +478,7 @@ public class ManagerOverviewController implements Initializable {
 			}
 		}
 		if (!isSuccess) {
-			AlertUtil.showWarningAlert("未指定酒店或酒店不存在！");
+			AlertUtil.showWarningAlert("选定的酒店不存在！");
 			return;
 		}
 		AlertUtil.showInformationAlert("更新酒店成功！");
@@ -512,6 +529,7 @@ public class ManagerOverviewController implements Initializable {
 		if (!isSuccess) {
 			updateWorkerNameTextField.setText("");
 			updateWorkerContactTextField.setText("");
+			currentHotelWorkerModel = null;
 			AlertUtil.showWarningAlert("不存在该酒店工作人员！");
 		}
 	}
@@ -519,7 +537,7 @@ public class ManagerOverviewController implements Initializable {
 	@FXML
 	private void updateHotelWorker() {
 		if (currentHotelWorkerModel == null) {
-			AlertUtil.showWarningAlert("未指定酒店工作人员！");
+			AlertUtil.showWarningAlert("未选定酒店工作人员！");
 			return;
 		}
 		// 更新底层数据
@@ -554,7 +572,7 @@ public class ManagerOverviewController implements Initializable {
 			}
 		}
 		if (!isSuccess) {
-			AlertUtil.showWarningAlert("未指定酒店工作人员或酒店工作人员不存在！");
+			AlertUtil.showWarningAlert("选定的酒店工作人员不存在！");
 			return;
 		}
 		AlertUtil.showInformationAlert("更新酒店工作人员成功！");
@@ -605,6 +623,7 @@ public class ManagerOverviewController implements Initializable {
 		if (!isSuccess) {
 			updateMarketNameTextField.setText("");
 			updateMarketContactTextField.setText("");
+			currentMarketModel = null;
 			AlertUtil.showWarningAlert("不存在该网站营销人员！");
 		}
 	}
@@ -647,7 +666,7 @@ public class ManagerOverviewController implements Initializable {
 			}
 		}
 		if (!isSuccess) {
-			AlertUtil.showWarningAlert("未指定网站营销人员或网站营销人员不存在！");
+			AlertUtil.showWarningAlert("选定的网站营销人员不存在！");
 			return;
 		}
 		AlertUtil.showInformationAlert("更新网站营销人员成功！");
@@ -664,16 +683,25 @@ public class ManagerOverviewController implements Initializable {
 
 	public void setMain(Main main, WebManagerVO vo, Stage stage) {
 		this.main = main;
+		RemoteHelper remoteHelper = RemoteHelper.getInstance();
 		// 初始化combobox
-		ObservableList<String> viptypeList = updatevipTypeCombobox.getItems();
-		viptypeList.addAll("非会员", "普通会员", "企业会员");
-
+		updatevipTypeCombobox.getItems().addAll("非会员", "普通会员", "企业会员");
+		updatevipLevelCombobox.getItems().addAll("一级会员","二级会员","三级会员","四级会员","五级会员");
+		
 		// 初始化所有表格
 		updateClientTable();
 		updateHotelTable();
 		updateHotelWorkerTable();
 		updateMarketTable();
 
+		// 录入统计数据
+		clientNumLabel.setText(String.valueOf(clientList.size()));
+		hotelNumLabel.setText(String.valueOf(hotelList.size()));
+		 try {
+			orderNumLabel.setText(String.valueOf(remoteHelper.getManageBLService().getordernumber()));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 		// 实时更新时间线程
 		Updatable renderer = new Updatable();
 		advance(renderer);
@@ -700,7 +728,8 @@ public class ManagerOverviewController implements Initializable {
 					model.setVipInfo("");
 				} else {
 					model.setVIPtype(clientVO.getvipinfo().getType() == VIPType.NORMAL ? "普通会员" : "企业会员");
-					model.setVipInfo(clientVO.getvipinfo().getInfo());
+					model.setVipLevel(clientVO.getvipinfo().getInfo().split(",")[0]);
+					model.setVipInfo(clientVO.getvipinfo().getInfo().split(",")[1]);
 				}
 				clientList.add(model);
 			}
@@ -714,7 +743,7 @@ public class ManagerOverviewController implements Initializable {
 		clientContactColumn.setCellValueFactory(celldata -> celldata.getValue().contactProperty());
 		clientVipTypeColumn.setCellValueFactory(celldata -> celldata.getValue().vipTypeProperty());
 		clientVipInfoColumn.setCellValueFactory(celldata -> celldata.getValue().vipInfoProperty());
-
+		clientVipLevelColumn.setCellValueFactory(celldata -> celldata.getValue().vipLevelProperty());
 		clientTable.setItems(clientList);
 	}
 

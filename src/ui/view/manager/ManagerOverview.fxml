@@ -59,13 +59,14 @@
                                       <items>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                              <children>
-                                                <TableView fx:id="clientTable" layoutX="-1.0" prefHeight="377.0" prefWidth="537.0" stylesheets="@../css/tableview.css">
+                                                <TableView fx:id="clientTable" layoutX="-1.0" prefHeight="377.0" prefWidth="537.0" stylesheets="@../css/tableview.css" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
                                                   <columns>
                                                       <TableColumn fx:id="clientIDColumn" prefWidth="54.0" text="ID" />
-                                                    <TableColumn fx:id="clientNameColumn" prefWidth="86.0" text="姓名" />
-                                                      <TableColumn fx:id="clientContactColumn" prefWidth="125.0" text="手机号" />
-                                                      <TableColumn fx:id="clientVipTypeColumn" prefWidth="72.0" text="会员类型" />
-                                                    <TableColumn fx:id="clientVipInfoColumn" prefWidth="199.0" text="会员信息" />
+                                                    <TableColumn fx:id="clientNameColumn" prefWidth="74.0" text="姓名" />
+                                                      <TableColumn fx:id="clientContactColumn" prefWidth="119.0" text="手机号" />
+                                                      <TableColumn fx:id="clientVipTypeColumn" text="会员类型" />
+                                                      <TableColumn fx:id="clientVipLevelColumn" prefWidth="102.0" text="会员等级" />
+                                                    <TableColumn fx:id="clientVipInfoColumn" prefWidth="110.0" text="会员信息" />
                                                   </columns>
                                                 </TableView>
                                              </children>
@@ -81,12 +82,12 @@
                                                                   <Button alignment="CENTER" contentDisplay="CENTER" layoutX="221.0" layoutY="118.0" mnemonicParsing="false" onAction="#updateClient" prefHeight="24.0" prefWidth="95.0" stylesheets="@../css/button.css" text="修改" AnchorPane.leftAnchor="222.0" />
                                                                   <GridPane layoutY="14.0" prefHeight="109.0" prefWidth="504.0" AnchorPane.topAnchor="9.0">
                                                                      <children>
-                                                                        <Label stylesheets="@../css/label.css" text="姓名：" GridPane.rowIndex="1" />
+                                                                        <Label stylesheets="@../css/label.css" text="姓名：" GridPane.columnIndex="2" />
                                                                         <Label stylesheets="@../css/label.css" text="会员信息：" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                        <Label stylesheets="@../css/label.css" text="手机号：" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                        <Label stylesheets="@../css/label.css" text="手机号：" GridPane.rowIndex="1" />
                                                                         <TextField fx:id="updateClientIDTextField" GridPane.columnIndex="1" />
-                                                                        <TextField fx:id="updateClientNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                        <TextField fx:id="updateClientContactTextField" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                                        <TextField fx:id="updateClientNameTextField" GridPane.columnIndex="3" />
+                                                                        <TextField fx:id="updateClientContactTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                                         <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#updateSearchClient" prefHeight="18.0" prefWidth="14.0">
                                                                            <graphic>
                                                                               <ImageView fitHeight="19.0" fitWidth="19.0">
@@ -101,8 +102,10 @@
                                                                         </Button>
                                                                         <TextField fx:id="updateClientVIPTextField" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                                                                         <Label stylesheets="@../css/label.css" text="ID：" />
-                                                                        <Label stylesheets="@../css/label.css" text="会员类型：" GridPane.rowIndex="2" />
-                                                                        <ComboBox fx:id="updatevipTypeCombobox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                        <Label stylesheets="@../css/label.css" text="会员类型：" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                        <ComboBox fx:id="updatevipTypeCombobox" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                                        <Label stylesheets="@../css/label.css" text="会员等级：" GridPane.rowIndex="2" />
+                                                                        <ComboBox fx:id="updatevipLevelCombobox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                                      </children>
                                                                      <columnConstraints>
                                                                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="90.0" />

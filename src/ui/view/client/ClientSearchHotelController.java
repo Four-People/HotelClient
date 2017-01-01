@@ -168,10 +168,15 @@ public class ClientSearchHotelController implements Initializable {
 	@FXML
 	private void gotoGenerateOrder() {
 		if(currentClient.getcredit()>=0){
-		main.gotoGenerateOrder(currentHotel,currentClient);
+			if (currentHotel==null) {
+				AlertUtil.showWarningAlert("请先选定酒店(～￣▽￣)~");
+			}
+			else{
+				main.gotoGenerateOrder(currentHotel,currentClient);
+			}
 		}
 		else{
-			AlertUtil.showWarningAlert("对不起，您的信用值不足");
+			AlertUtil.showWarningAlert("对不起，您的信用值不足。");
 		}
 	}
 
@@ -216,7 +221,7 @@ public class ClientSearchHotelController implements Initializable {
 		starButton.setValue("不限");
 
 		ObservableList<String> prices = FXCollections.observableArrayList();
-		prices.addAll("0", "100", "200", "300", "400", "500", "600", "700", "800", "900");
+		prices.addAll("0", "100", "200", "300", "400", "500", "600", "700", "800", "900","1000","1100","1200","1300","1400","1500","1600");
 		lowpriceButton.setItems(prices);
 		lowpriceButton.setVisibleRowCount(5);
 		highpriceButton.setVisibleRowCount(5);
@@ -493,13 +498,15 @@ public class ClientSearchHotelController implements Initializable {
 			
 			//选择当前酒店最便宜的房间价格
 			ArrayList<RoomVO> rooms = helper.getHotelBLService().getallroom(vo.getid());
-			int cheapest = rooms.get(0).getprice();
-			for(RoomVO room: rooms){
-				if (cheapest>room.getprice()) {
-					cheapest = room.getprice();
+			if (!rooms.isEmpty()) {
+				int cheapest = rooms.get(0).getprice();
+				for(RoomVO room: rooms){
+					if (cheapest>room.getprice()) {
+						cheapest = room.getprice();
+					}
 				}
+				model.setCheapestRoomPrice(cheapest);
 			}
-			model.setCheapestRoomPrice(cheapest);
 			model.setStar(vo.getstar());
 			model.setScore(vo.getscore().split(",")[0]);
 			model.setOrderState("未曾入住");

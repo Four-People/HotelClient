@@ -83,6 +83,12 @@ public class RegistController implements Initializable {
 						noLabel.setVisible(true);
 						registButton.setDisable(true);
 					}
+					if (usernameTextField.getText().isEmpty()) {
+						yesImage.setVisible(false);
+						noImage.setVisible(false);
+						noLabel.setVisible(false);
+						registButton.setDisable(true);
+					}
 				} catch (RemoteException e) {
 					e.printStackTrace();
 				}
